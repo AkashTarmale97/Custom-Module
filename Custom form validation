@@ -1,0 +1,388 @@
+<?php
+
+use Drupal\Core\Form\FormStateInterface;
+
+/* Registration Form Validation Main Function */
+
+function custom_form_validation_form_user_register_form_alter(&$form, FormStateInterface $form_state, $form_id)
+{
+
+	//echo "<script>console.log('Registration Hook Called')</script>";
+
+	array_unshift($form['#validate'], 'register_form_validate');
+}
+
+/* Registration Form Validation Driver Function */
+function register_form_validate($form, &$form_state)
+{
+ 
+	//echo "<script>console.log('Registeration Form Validation Function Called')</script>";
+
+	/* Field Labels */
+	$userNameLabel = "name";
+	$firstNameLabel = "first_name";
+	$lastNameLabel = "last_name";
+	$mobileNumLabel = "field_mobile_number";
+	$consumerOrgLabel = "consumerorg";
+	//$individualPANLabel = "field_individual_pan";
+	/*$organizationCINLabel = "field_startup_cin";
+	$pinCodeLabel = "field_pin_code";
+	$organizationPanLabel="field_organization_pan";
+	$websiteURLLabel="field_website_url";*/
+	
+
+	/* Field Values */
+	$userName = trim($form_state->getValue($userNameLabel), " ");
+	$firstName = trim($form_state->getValue($firstNameLabel)[0]['value'], " ");
+	$lastName = trim($form_state->getValue($lastNameLabel)[0]['value'], " ");
+	$mobileNum = trim($form_state->getValue($mobileNumLabel)[0]['value'], " ");
+	$consumerOrg = trim($form_state->getValue($consumerOrgLabel), " ");
+	//$individualPAN = trim($form_state->getValue($individualPANLabel)[0]['value'], " ");
+	/*$organizationCIN = trim($form_state->getValue($organizationCINLabel)[0]['value'], " ");
+	$pinCode = trim($form_state->getValue($pinCodeLabel)[0]['value'], " ");
+	$organizationPan = trim($form_state->getValue($organizationPanLabel)[0]['value'], " ");
+	$websiteURL = trim($form_state->getValue($websiteURLLabel)[0]['value'], " ");*/
+
+
+	/* Debug Code
+		echo "<script>console.log('".$userName."')</script>";
+		echo "<script>console.log('".$firstName."')</script>";
+		echo "<script>console.log('".$lastName."')</script>";
+		echo "<script>console.log('".$mobileNum."')</script>";
+		echo "<script>console.log('".$consumerOrg."')</script>";
+	 */
+
+	/*
+		foreach ($form_state->getValues() as $key => $value) {
+			\Drupal::messenger()->addMessage($key . ': ' . $value);
+		}*/
+
+	$errorMsg = null;
+
+	/*
+	if (!empty($individualPAN)) {
+
+		if (!preg_match("/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/", $individualPAN)) {
+
+			//echo "<script>console.log('Inside if PAN')</script>";
+
+			$errorMsg = "PAN is required for User Type Individual and can contain only A-Z and 0-9. Min Length:10 Max Length:10 characters.";
+			$form_state->setErrorByName($individualPANLabel, t($errorMsg));
+		}
+	}
+	*/
+	
+	/*if (!empty($websiteURL)) {
+
+		if (!preg_match("/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w.-]*)*\/?$/", $websiteURL)) {
+
+			//echo "<script>console.log('Inside if PAN')</script>";
+
+			$errorMsg = "websiteURL is required please enter domain name.";
+			$form_state->setErrorByName($websiteURLLabel, t($errorMsg));
+		}
+	}
+	
+	if (!empty($organizationPan)) {
+
+		if (!preg_match("/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/", $organizationPan)) {
+
+			//echo "<script>console.log('Inside if PAN')</script>";
+
+			$errorMsg = "PAN is required for User Type Individual and can contain only A-Z and 0-9. Min Length:10 Max Length:10 characters.";
+			$form_state->setErrorByName($organizationPanLabel, t($errorMsg));
+		}
+	}
+
+	if (!preg_match("/^[A-Z]{1}[0-9]{5}[A-Z]{2}[0-9]{4}[A-Z]{3}[0-9]{6}$/", $organizationCIN)) {
+
+		$errorMsg = "Organization CIN is required and can contain only A-Z and 0-9. Min Length:21 Max Length:21 characters.";
+		$form_state->setErrorByName($organizationCINLabel, t($errorMsg));
+	}*/
+
+	if (!preg_match("/^[a-zA-Z0-9_]{4,50}$/", $userName)) {
+
+		$errorMsg = "Username Can Contain a-z, A-Z and underscore'_'. Min Length:4 Max Length:50 characters.";
+		$form_state->setErrorByName($userNameLabel, t($errorMsg));
+	}
+
+	if (!preg_match("/^[a-zA-Z0-9 ]{2,30}$/", $firstName)) {
+
+		$errorMsg = "First Name Can Contain a-z, A-Z, 0-9 and Spaces. Min Length:2 Max Length:30 characters.";
+		$form_state->setErrorByName($firstNameLabel, t($errorMsg));
+	}
+
+	if (!preg_match("/^[a-zA-Z0-9 ]{2,30}$/", $lastName)) {
+
+		$errorMsg = "Last Name Can Contain a-z, A-Z, 0-9 and Spaces. Min Length:2 Max Length:30 characters.";
+		$form_state->setErrorByName($lastNameLabel, t($errorMsg));
+	}
+
+	if (!preg_match("/^\d{10,10}$/", $mobileNum)) {
+
+		$errorMsg = "Mobile Number Can Contain Only Digits and Min-Max Length:10 Digits.";
+		$form_state->setErrorByName($mobileNumLabel, t($errorMsg));
+	}
+
+	if (!empty($consumerOrg)) {
+		if (!preg_match("/^[a-zA-Z0-9 ]{2,50}$/", $consumerOrg)) {
+
+			//echo "<script>console.log('" . $consumerOrg . "')</script>";
+
+			$errorMsg = "Consumer organization can contain only a-z, A-Z, 0-9 and Spaces. Min Length:2 Max Length:50 characters.";
+			$form_state->setErrorByName($consumerOrgLabel, t($errorMsg));
+		}
+	}
+
+	/*if (!preg_match("/^[0-9]{6}$/", $pinCode)) {
+
+		$errorMsg = "Pin Code can contain only 0-9. Min Length:6 Max Length:6 characters.";
+		$form_state->setErrorByName($pinCodeLabel, t($errorMsg));
+	}*/
+}
+
+/* Comment Form Validation Main Function */
+function custom_form_validation_form_comment_form_alter(&$form, FormStateInterface $form_state, $form_id)
+{
+
+	//echo "<script>console.log('Comment Form Hook Called')</script>";
+
+	array_unshift($form['#validate'], 'comment_form_validate');
+}
+
+/* Comment Form Validation Driver Function */
+function comment_form_validate($form, &$form_state)
+{
+
+	//echo "<script>console.log('Comment Form Validation Function Called')</script>";
+
+	/* Field Labels */
+	//$subjectLabel = 'subject';
+	$commentBodyLabel = 'comment_body';
+
+	/* Field Values */
+	//$subject = trim($form_state->getValue($subjectLabel)[0]['value'], " ");
+	$commentBody = trim($form_state->getValue($commentBodyLabel)[0]['value'], " ");
+
+	$errorMsg = null;
+	/*
+	if (!preg_match("/^[a-zA-Z0-9,.''\"\"\[\]{} ]{1,60}$/", $subject)) {
+
+		$errorMsg = "Subject Can Contain a-z, A-Z, 0-9, spaces and special characters like ,.{}[]\"\"''. Min Length:1 Max Length:60 characters.";
+		$form_state->setErrorByName($subjectLabel, t($errorMsg));
+	}*/
+
+	if (!preg_match("/^[a-zA-Z0-9,.''\"\"\[\]{} ]{10,100}$/", $commentBody)) {
+
+		$errorMsg = "Comment Can Contain a-z, A-Z, 0-9, spaces and special characters like ,.{}[]\"\"''. Min Length:10 Max Length:100 characters.";
+		$form_state->setErrorByName($commentBodyLabel, t($errorMsg));
+	}
+}
+
+/* Feedback Form Validation Main Function */
+function custom_form_validation_form_contact_message_feedback_form_alter(&$form, FormStateInterface $form_state, $form_id)
+{
+
+	//echo "<script>console.log('Feedback Form Hook Called')</script>";
+
+	array_unshift($form['#validate'], 'feedback_form_validate');
+}
+
+/* Feedback Form Validation Driver Function */
+function feedback_form_validate($form, &$form_state)
+{
+
+	//echo "<script>console.log('Feedback Form Validation Function Called')</script>";
+
+	/* Field Labels */
+	$messageBodyLabel = 'field_message';
+
+	/* Field Values */
+	$messageBody = trim($form_state->getValue($messageBodyLabel)[0]['value'], " ");
+
+	$errorMsg = null;
+
+	if (!empty($messageBody)) {
+		if (!preg_match("/^[a-zA-Z0-9,.''\"\"\[\]{} ]{10,100}$/", $messageBody)) {
+
+			$errorMsg = "Message Can Contain a-z, A-Z, 0-9, spaces and special characters like ,.{}[]\"\"''. Min Length:10 Max Length:100 characters.";
+			$form_state->setErrorByName($messageBodyLabel, t($errorMsg));
+		}
+	}
+}
+
+/* Forum Form Validation Main Function */
+function custom_form_validation_form_node_forum_form_alter(&$form, FormStateInterface $form_state, $form_id)
+{
+
+	//echo "<script>console.log('Forum Form Hook Called')</script>";
+
+	array_unshift($form['#validate'], 'forum_form_validate');
+}
+
+/* Forum Form Driver Function */
+function forum_form_validate($form, &$form_state)
+{
+
+	//echo "<script>console.log('Forum Form Validation Function Called')</script>";
+
+	/* Field Labels */
+	$titleLabel = 'title';
+	$bodyLabel = 'body';
+
+	/* Field Values */
+	$title = trim($form_state->getValue($titleLabel)[0]['value'], " ");
+	$body = trim($form_state->getValue($bodyLabel)[0]['value'], " ");
+
+	$errorMsg = null;
+
+	if (!preg_match("/^[a-zA-Z0-9,.''\"\"\[\]{} ]{1,60}$/", $title)) {
+
+		$errorMsg = "Subject Can Contain a-z, A-Z, 0-9, spaces and special characters like ,.{}[]\"\"''. Min Length:1 Max Length:60 characters.";
+		$form_state->setErrorByName($titleLabel, t($errorMsg));
+	}
+
+	if (!preg_match("/^[a-zA-Z0-9,.''\"\"\[\]{} ]{10,100}$/", $body)) {
+
+		$errorMsg = "Body Can Contain a-z, A-Z, 0-9, spaces and special characters like ,.{}[]\"\"''. Min Length:10 Max Length:100 characters.";
+		$form_state->setErrorByName($bodyLabel, t($errorMsg));
+	}
+}
+
+/* Application Create Form Validation Main Function */
+function custom_form_validation_form_application_create_form_alter(&$form, FormStateInterface $form_state, $form_id)
+{
+
+	//echo "<script>console.log('Create Application Form Hook Called')</script>";
+
+	array_unshift($form['#validate'], 'application_create_form_validate');
+}
+
+/* Application Create Form Driver Function */
+function application_create_form_validate($form, &$form_state)
+{
+
+	//echo "<script>console.log('Create Application Form Validation Function Called')</script>";
+
+	/* Field Labels */
+	$titleLabel = 'title';
+	$summaryLabel = 'apic_summary';
+
+	/* Field Values */
+	$title = trim($form_state->getValue($titleLabel)[0]['value'], " ");
+	$summary = trim($form_state->getValue($summaryLabel)[0]['value'], " ");
+
+	$errorMsg = null;
+
+	if (!preg_match("/^[a-zA-Z0-9,.''\"\"\[\]{} ]{1,20}$/", $title)) {
+
+		$errorMsg = "Subject Can Contain a-z, A-Z, 0-9, spaces and special characters like ,.{}[]\"\"''. Min Length:1 Max Length:20 characters.";
+		$form_state->setErrorByName($titleLabel, t($errorMsg));
+	}
+
+	if (!preg_match("/^[a-zA-Z0-9,.''\"\"\[\]{} ]{10,100}$/", $summary)) {
+
+		$errorMsg = "Body Can Contain a-z, A-Z, 0-9, spaces and special characters like ,.{}[]\"\"''. Min Length:10 Max Length:100 characters.";
+		$form_state->setErrorByName($summaryLabel, t($errorMsg));
+	}
+}
+
+/* Application Update Form Validation Main Function */
+function custom_form_validation_form_application_update_form_alter(&$form, FormStateInterface $form_state, $form_id)
+{
+
+	//echo "<script>console.log('Create Application Form Hook Called')</script>";
+
+	array_unshift($form['#validate'], 'application_update_form_validate');
+}
+
+/* Application Create Form Driver Function */
+function application_update_form_validate($form, &$form_state)
+{
+
+	//echo "<script>console.log('Create Application Form Validation Function Called')</script>";
+
+	/* Field Labels */
+	$titleLabel = 'title';
+	$summaryLabel = 'apic_summary';
+
+	/* Field Values */
+	$title = trim($form_state->getValue($titleLabel)[0]['value'], " ");
+	$summary = trim($form_state->getValue($summaryLabel)[0]['value'], " ");
+
+	$errorMsg = null;
+
+	if (!preg_match("/^[a-zA-Z0-9,.''\"\"\[\]{} ]{1,20}$/", $title)) {
+
+		$errorMsg = "Subject Can Contain a-z, A-Z, 0-9, spaces and special characters like ,.{}[]\"\"''. Min Length:1 Max Length:20 characters.";
+		$form_state->setErrorByName($titleLabel, t($errorMsg));
+	}
+
+	if (!preg_match("/^[a-zA-Z0-9,.''\"\"\[\]{} ]{10,100}$/", $summary)) {
+
+		$errorMsg = "Body Can Contain a-z, A-Z, 0-9, spaces and special characters like ,.{}[]\"\"''. Min Length:10 Max Length:100 characters.";
+		$form_state->setErrorByName($summaryLabel, t($errorMsg));
+	}
+}
+
+/* Consumer Organization Edit Form Validation Main Function */
+function custom_form_validation_form_consumerorg_edit_form_alter(&$form, FormStateInterface $form_state, $form_id)
+{
+
+	//echo "<script>console.log('Consumer Organization Edit Form Hook Called')</script>";
+
+	array_unshift($form['#validate'], 'organization_edit_form_validate');
+}
+
+/* Consumer Organization Edit Form Driver Function */
+function organization_edit_form_validate($form, &$form_state)
+{
+
+	//echo "<script>console.log('Consumer Organization Edit Form Validation Function Called')</script>";
+
+	/* Field Labels */
+	$titleLabel = 'title';
+
+	/* Field Values */
+	$title = trim($form_state->getValue($titleLabel)[0]['value'], " ");
+
+	$errorMsg = null;
+
+	if (!preg_match("/^[a-zA-Z0-9 ]{2,50}$/", $title)) {
+
+		$errorMsg = "Consumer organization can contain only a-z, A-Z, 0-9 and Spaces. Min Length:2 Max Length:50 characters.";
+		$form_state->setErrorByName($titleLabel, t($errorMsg));
+	}
+}
+
+/* User Edit Form Validation Main Function */
+function custom_form_validation_form_user_form_alter(&$form, FormStateInterface $form_state, $form_id)
+{
+
+	//echo "<script>console.log('User Edit Form Hook Called')</script>";
+
+	array_unshift($form['#validate'], 'user_edit_form_validate');
+}
+
+/* User Edit Form Driver Function */
+function user_edit_form_validate($form, &$form_state)
+{
+
+	//echo "<script>console.log('Consumer Organization Edit Form Validation Function Called')</script>";
+
+	/* Field Labels */
+	$mobileNumLabel = "field_mobile_number";
+
+	/* Field Values */
+	$mobileNum = trim($form_state->getValue($mobileNumLabel)[0]['value'], " ");
+
+	$errorMsg = null;
+
+	if (!preg_match("/^\d{10,10}$/", $mobileNum)) {
+
+		$errorMsg = "Mobile Number Can Contain Only Digits and Min-Max Length:10 Digits.";
+		$form_state->setErrorByName($mobileNumLabel, t($errorMsg));
+	}
+}
+
+
